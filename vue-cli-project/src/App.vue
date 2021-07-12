@@ -9,10 +9,10 @@
     <main class="container py-5">
 
       <div class="alert alert-sussecss">
-          Risultato del Filtro 
-          <br>
-          {{printActiveFilters()}}
-        </div>
+        Sono {{postList.length}} Risultati del Filtro:
+        <br>
+        {{printActiveFilters()}}
+      </div>
         
       <div class="row row-cols-3 g-4">
         
@@ -49,7 +49,8 @@ export default {
       title: "La mia prima pagina con Vue cli",
       postsList: [],
       allPosts: [],
-      datiFiltro: {}
+      datiFiltro: null,
+      countFiltro: 0
     };
   },
 
@@ -59,6 +60,7 @@ export default {
       this.postsList = datiRicevuti
 
       this.datiFiltro = datiRicevuti;
+      this.countFiltro = datiRicevuti.results.length
     },
 
     printActiveFilters() {
