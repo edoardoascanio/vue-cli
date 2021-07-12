@@ -6,28 +6,31 @@
     
     <Navbar/>
 
-    <div class="container">
+    <main class="container">
       <div class="row row-cols-3 g-4">
-        <div class="col" v-for="index in 10" :key="index">
+        <div class="col" v-for="post in postList" :key="post.id">
+
           <PostCard 
-            :title="'Titolo' + index"
-            :content="'Contenuto della card' + index"
-            :linkText="'Mostra dettagli'"
+            :title="post.title"
+            :content="post.post"
+            :img="post.cover_url"
+            :tags="post.tags"
           />
+
         </div>
       </div>
-    </div>
+    <main>
 
   </div>
 </template>
 
 <script>
-import PostCard from './components/PostCard.vue';
-import Navbar from './components/Navbar.vue';
+import PostCard from "./components/PostCard.vue";
+import Navbar from "./components/Navbar.vue";
 //import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     //HelloWorld
     PostCard,
@@ -36,24 +39,31 @@ export default {
 
   data() {
     return {
-      title: "La mia prima pagina con Vue cli"
-    }
+      title: "La mia prima pagina con Vue cli",
+      postList: [],
+    };
   },
 
-  computed:{
+  computed: {},
+  methods: {},
 
-  },
+  mounted() {
+    this.axios.get("http://127.0.0.1:8000/api/posts")
+    .then(resp =>{
+      this.postList = resp.data.results;
+    })
 
-  methods:{
+    .catch(er =>{
+      console.error(er)
+      alert("Errore nel caricamento dei dati.")
+    })
+  }
 
-  },
-
-}
+};
 </script>
 
 <style lang="scss">
 @import "~bootstrap/dist/css/bootstrap.min.css";
-
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
