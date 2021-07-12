@@ -6,18 +6,25 @@
     
     <Navbar/>
 
-    <main class="container">
-      <div class="row row-cols-3 g-4">
-        <div class="col" v-for="post in postList" :key="post.id">
+    <main class="container py-5">
 
+      <div class="alert alert-sussecss">
+          Risultato del Filtro 
+          <br>
+          {{printActiveFilters()}}
+        </div>
+        
+      <div class="row row-cols-3 g-4">
+        
+        <div class="col" v-for="post in postList" :key="post.id">
           <PostCard 
             :title="post.title"
             :content="post.post"
             :img="post.cover_url"
             :tags="post.tags"
           />
-
         </div>
+
       </div>
     <main>
 
@@ -40,17 +47,40 @@ export default {
   data() {
     return {
       title: "La mia prima pagina con Vue cli",
-      postList: [],
+      postsList: [],
+      allPosts: [],
+      datiFiltro: {}
     };
   },
 
   computed: {},
-  methods: {},
+  methods: {
+    onFilters(datiRicevuti) {
+      this.postsList = datiRicevuti
+
+      this.datiFiltro = datiRicevuti;
+    },
+
+    printActiveFilters() {
+      const toReturn = [];
+
+      if(Object.keys(this.datiFiltro).length === 0) {
+        return
+      }
+
+      for (const chiavefiltro of this.datiFiltro) {
+        toReturn.push(chiave + " = " + this.datiFiltro[chiavefiltro]);
+      }
+
+      return toReturn.join("<br>");
+    }
+  },
 
   mounted() {
     this.axios.get("http://127.0.0.1:8000/api/posts")
     .then(resp =>{
-      this.postList = resp.data.results;
+      this.allPosts = resp.data.results;
+      this.postsList = resp.data.results;
     })
 
     .catch(er =>{

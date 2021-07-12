@@ -14,12 +14,25 @@
                     Logout
                 </a>
             </div>
+
+            <SearchInput @filters="onFilters"/>
         </div>
     </nav>
 </template>
  
 <script>
+import SearchInput from "./SearchInput.vue";
+
 export default {
-    name: "Navbar"
+    name: "Navbar",
+    components: {
+        SearchInput,
+    },
+
+    methods: {
+        onFilters(datiInviatiDalEmit) {
+            this.$emit("filters", datiInviatiDalEmit)
+        }
+    }
 };
 </script>
