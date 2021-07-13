@@ -6,12 +6,18 @@
     
     <Navbar/>
 
-    <main class="container py-5">
+    <div class="container py-5">
+      
+      <TextInput label="input di prova" v-model="textInputValue"/>
+      <TextAreaInput label="input di prova" v-model="textInputValue"/>
 
       <div class="alert alert-sussecss">
         Sono {{postList.length}} Risultati del Filtro:
         <br>
-        {{printActiveFilters()}}
+        <div v-html="printActiveFilters()"></div>
+
+        <br>
+        <a href="#" class="btn btn-link" @click="resetFilter">Annulla filtri </a>
       </div>
         
       <div class="row row-cols-3 g-4">
@@ -26,7 +32,7 @@
         </div>
 
       </div>
-    <main>
+    </div>
 
   </div>
 </template>
@@ -34,6 +40,8 @@
 <script>
 import PostCard from "./components/PostCard.vue";
 import Navbar from "./components/Navbar.vue";
+import TextInput from "./components/TextInput.vue";
+import TextAreaInput from "./components/TextAreaInput.vue";
 //import HelloWorld from './components/HelloWorld.vue'
 
 export default {
@@ -42,6 +50,8 @@ export default {
     //HelloWorld
     PostCard,
     Navbar,
+    TextInput,
+    TextAreaInput,
   },
 
   data() {
@@ -50,14 +60,24 @@ export default {
       postsList: [],
       allPosts: [],
       datiFiltro: null,
-      countFiltro: 0
+      countFiltro: 0,
+      textInputValue: ""
     };
   },
 
   computed: {},
   methods: {
     onFilters(datiRicevuti) {
-      this.postsList = datiRicevuti
+      const searchedContent = datiRicevuti.filters.content;
+
+      this.postsList = datiRicevuti.results.map(post => {
+        const esprReg = new RegExp(searchedContent, "g");
+
+        post.content = post.content.replace(esprReg, 
+        `<span class="marked">${searchedContent}</span>`)
+
+        return post;
+      });
 
       this.datiFiltro = datiRicevuti;
       this.countFiltro = datiRicevuti.results.length
@@ -71,10 +91,16 @@ export default {
       }
 
       for (const chiavefiltro of this.datiFiltro) {
-        toReturn.push(chiave + " = " + this.datiFiltro[chiavefiltro]);
+        toReturn.push(chiavefiltro + " = " + this.datiFiltro[chiavefiltro]);
       }
 
       return toReturn.join("<br>");
+    },
+
+    resetFilter() {
+      this.postsList = this.allPosts
+      this.datiFiltro = null
+      this.countFiltro = 0
     }
   },
 
@@ -104,5 +130,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.marked{
+  background-color: yellow ;
 }
 </style>
